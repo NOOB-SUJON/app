@@ -43,7 +43,7 @@ st.markdown("""
 
 # ৩. হেডার সেকশন
 st.markdown("<h1>📥 DownPro Online Downloader</h1>", unsafe_allow_html=True)
-st.markdown("<p class='subtitle'>SaveFrom.net-এর মতো যেকোনো সোশ্যাল মিডিয়া ভিডিও সরাসরি ডাউনলোড করুন</p>", unsafe_allow_html=True)
+st.markdown("<p class='subtitle'>All website video just in one place </p>", unsafe_allow_html=True)
 
 # ৪. লিংক ইনপুট বক্স
 video_url = st.text_input("", placeholder="এখানে ভিডিওর লিংকটি পেস্ট করুন (যেমন: https://...)", label_visibility="collapsed")
