@@ -20,7 +20,7 @@ with col_input:
 with col_search_btn:
     search_triggered = st.button("Download")
 
-# পলিসি ও রিভিউ টেক্সট 
+# পলিসি ও রিভিউ টেক্সট (সহজ এবং নিরাপদ মেথড)
 st.write("By using our service you accept our Terms of Service and Privacy Policy")
 st.write("▶ How to download? Watch the tutorial")
 st.write("Scanned by ✓ Norton Safe Web")
@@ -38,20 +38,14 @@ c4.warning("🎵 tiktok.com")
 
 st.write("---")
 
-# ৫. মেইন লজিক (আপনার পছন্দের সুন্দর ইন্টারফেস)
+# ৫. মেইন ডাউনলোড লজিক
 if url_input or search_triggered:
     if not url_input:
         st.warning("Please paste a video link first.")
     else:
         try:
-            with st.spinner("🔍 Gathering video details... Please wait."):
-                # সার্ভার ব্লক এড়াতে বেসিক সেটিংস
-                ydl_opts = {
-                    'extract_flat': False, 
-                    'skip_download': True,
-                    'quiet': True,
-                    'no_warnings': True
-                }
+            with st.spinner("Locating video source file... Please wait."):
+                ydl_opts = {'extract_flat': False, 'skip_download': True}
                 
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info_dict = ydl.extract_info(url_input, download=False)
@@ -64,15 +58,15 @@ if url_input or search_triggered:
                     mins, secs = divmod(duration, 60)
                     duration_str = f"{mins}:{secs:02d}"
 
-                # 🎬 ভিডিওর তথ্য প্রদর্শন (থাম্বনেইল ও টাইটেল দেখাবে)
-                st.write("### 🎥 Video Found:")
+                # ভিডিওর তথ্য প্রদর্শন
+                st.write("### Video Details:")
                 col_thumb, col_details = st.columns([1, 1.5])
                 with col_thumb:
                     if video_thumbnail:
                         st.image(video_thumbnail, use_container_width=True)
                 with col_details:
-                    st.write(f"**Title:** {video_title[:80]}...")
-                    st.write(f"⏱️ **Duration:** {duration_str}")
+                    st.write(f"**Title:** {video_title[:60]}...")
+                    st.write(f"**Duration:** {duration_str}")
                 
                 # কোয়ালিটি লিংক ফিল্টারিং
                 download_options = {}
@@ -82,26 +76,29 @@ if url_input or search_triggered:
                         resolution = f.get('format_note', f.get('resolution', 'Unknown'))
                         label = f"MP4 {resolution}"
                         download_options[label] = f['url']
+                        
+                for f in formats:
+                    if f.get('vcodec') == 'none' and f.get('acodec') != 'none' and f.get('url'):
+                        label = f"Audio MP3"
+                        download_options[label] = f['url']
                 
                 if not download_options and info_dict.get('url'):
                     download_options["MP4 (Normal Quality)"] = info_dict['url']
 
-                # ডাউনলোড বাটন তৈরি
+                # কোয়ালিটি সিলেক্টর এবং নিরাপদ বাটন লিংক
                 if download_options:
                     st.write("---")
                     selected_format = st.selectbox("Choose Quality:", list(download_options.keys()))
                     final_download_url = download_options[selected_format]
                     
-                    st.write("👇 Click the button below to get your video:")
-                    
-                    # নিরাপদ এবং সচল ওপেন লিংক মেথড
-                    st.page_link(final_download_url, label="🚀 Go to Video Stream (Right-Click & Save)", icon="📥")
-                    st.caption("💡 Guide: When the link opens, if the video plays, right-click (or long press on mobile) and select 'Save Video As...' to download.")
+                    st.write("👇 Click the link below to download:")
+                    st.write(f"[🚀 Click Here to Download Video]({final_download_url})")
+                    st.caption("Tip: If the video plays, simply right-click (or long press on mobile) and select 'Save Video As...'.")
                 else:
-                    st.warning("Could not safely extract direct download formats for this video.")
+                    st.warning("No download links found for this video.")
                     
         except Exception as e:
-            st.error("Platform restrictions active for this link. Please try another public video link.")
+            st.error("Error processing link. Please make sure the URL is correct.")
 
 st.write("---")
 
