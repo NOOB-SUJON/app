@@ -2,138 +2,184 @@ import streamlit as st
 import yt_dlp
 import requests
 
-# ১. পেজ কনফিগারেশন এবং টাইটেল সেটআপ (SaveFrom এর মতো গ্রিন-ডার্ক মিক্স থিম)
+# ১. পেজ কনফিগারেশন
 st.set_page_config(
-    page_title="Pro Video Downloader",
+    page_title="SaveFrom.net - Premium Video Downloader",
     page_icon="📥",
     layout="centered"
 )
 
-# ২. কাস্টম CSS ডিজাইন (সম্পূর্ণ SaveFrom.net ভাইব দেওয়ার জন্য)
+# ২. কাস্টম CSS ডিজাইন (হোয়াইট সার্চ বক্স এবং আকর্ষণীয় ইন্ট্রো স্টাইল)
 st.markdown("""
     <style>
-    .main { background-color: #0e1117; }
-    h1 { color: #25d366; text-align: center; font-family: 'Helvetica Neue', sans-serif; font-weight: 800; margin-bottom: 5px; }
-    .subtitle { text-align: center; color: #a3a8b4; margin-bottom: 30px; font-size: 16px; }
+    /* পুরো ওয়েবসাইটের ব্যাকগ্রাউন্ড হালকা এবং ক্লিন রাখা */
+    .stApp { background-color: #fcfcfc !important; }
+    h1 { font-family: 'Arial', sans-serif; font-weight: bold; color: #1e1e1e; text-align: center; margin-bottom: 0px; }
     
-    /* ইনপুট বক্স ডিজাইন */
+    /* ইন্ট্রো সেকশন ডিজাইন */
+    .intro-box {
+        background: linear-gradient(135deg, #5fa30f, #4b820a);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 35px;
+        box-shadow: 0 4px 15px rgba(95,163,15,0.2);
+    }
+    .intro-box h2 { color: white !important; margin-top: 0; font-size: 24px; }
+    .intro-box p { color: #f0f7e6; margin-bottom: 0; font-size: 15px; }
+    
+    /* ১০০% হোয়াইট সার্চ বক্স ডিজাইন */
     div.stTextInput > div > div > input {
-        border: 2px solid #25d366 !important;
-        border-radius: 30px !important;
-        padding: 12px 20px !important;
+        border: 2px solid #5fa30f !important;
+        border-radius: 4px !important;
+        padding: 14px 15px !important;
         font-size: 16px !important;
-        background-color: #1e222b !important;
+        background-color: #ffffff !important; /* সম্পূর্ণ সাদা ব্যাকগ্রাউন্ড */
+        color: #222222 !important; /* গাঢ় টেক্সট */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+    }
+    
+    /* সার্চ বাটন এবং ডাউনলোড বাটন স্টাইল */
+    div.stButton > button {
+        background-color: #5fa30f !important;
         color: white !important;
+        border: none !important;
+        border-radius: 4px !important;
+        padding: 12px 20px !important;
+        font-weight: bold !important;
+        font-size: 16px !important;
+        width: 100%;
+        transition: 0.2s ease;
     }
+    div.stButton > button:hover { background-color: #4b820a !important; }
     
-    /* ভিডিও কার্ড ডিজাইন */
-    .video-card {
-        background-color: #1e222b; padding: 20px; border-radius: 15px;
-        border: 1px solid #2d3139; margin-top: 20px; margin-bottom: 20px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    /* রেজাল্ট কার্ড ডিজাইন */
+    .savefrom-card {
+        background-color: #ffffff; 
+        padding: 20px; 
+        border-radius: 8px;
+        border: 1px solid #e1e8ed; 
+        margin-top: 25px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
-    
-    /* ড্রপডাউন ডিজাইন */
-    div.stSelectbox > div > div {
-        border: 1px solid #25d366 !important;
-        border-radius: 8px !important;
-    }
+    .footer { text-align: center; margin-top: 60px; color: #888888; font-size: 13px; }
     </style>
 """, unsafe_allow_html=True)
 
-# ৩. হেডার সেকশন
-st.markdown("<h1>📥 DownPro Online Downloader</h1>", unsafe_allow_html=True)
-st.markdown("<p class='subtitle'>All website video just in one place </p>", unsafe_allow_html=True)
+# ৩. লোগো সেকশন
+st.markdown("<h1 style='font-size: 45px; text-align:center;'><span style='color:#1e1e1e;'>savefrom</span><span style='color:#5fa30f;'>.net</span></h1>", unsafe_allow_html=True)
+st.write("---")
 
-# ৪. লিংক ইনপুট বক্স
-video_url = st.text_input("", placeholder="এখানে ভিডিওর লিংকটি পেস্ট করুন (যেমন: https://...)", label_visibility="collapsed")
+# ৪. দারুণ ইন্ট্রো সেকশন (Intro)
+st.markdown("""
+    <div class='intro-box'>
+        <h2>🚀 সুপারফাস্ট অনলাইন ভিডিও ডাউনলোডার</h2>
+        <p>কোনো রকম সফটওয়্যার ছাড়াই ইউটিউব, ফেসবুক, ইনস্টাগ্রাম এবং টিকটকের যেকোনো ভিডিও ফুল এইচডি (Full HD) কোয়ালিটিতে সরাসরি আপনার ডিভাইসে সেভ করুন সম্পূর্ণ ফ্রিতে।</p>
+    </div>
+""", unsafe_allow_html=True)
 
-# ৫. ভিডিও প্রসেসিং লজিক
-if video_url:
-    try:
-        with st.spinner("🔍 ভিডিওর সোর্স ফাইল খোঁজা হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।"):
-            ydl_opts = {'extract_flat': False, 'skip_download': True}
-            
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info_dict = ydl.extract_info(video_url, download=False)
+# ৫. ইনপুট ও সার্চ মেকানিজম (Enter এবং Button দুটোই কাজ করবে)
+col_input, col_search_btn = st.columns([3, 1])
+
+with col_input:
+    # এখানে ইউজার লিংক দিয়ে Enter চাপলেই ট্রিপল লোড হবে
+    url_input = st.text_input("", placeholder="এখানে ভিডিওর লিংকটি পেস্ট করুন...", label_visibility="collapsed")
+
+with col_search_btn:
+    search_triggered = st.button("ভিডিও খুঁজুন 🔍")
+
+# যদি ইউজার এন্টার চাপে অথবা সার্চ বাটনে ক্লিক করে
+if url_input or search_triggered:
+    if not url_input:
+        st.warning("⚠️ দয়া করে আগে একটি ভিডিও লিংক পেস্ট করুন।")
+    else:
+        try:
+            with st.spinner("🔍 ভিডিওর সোর্স ফাইল খোঁজা হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।"):
+                ydl_opts = {'extract_flat': False, 'skip_download': True}
                 
-                video_title = info_dict.get('title', 'Downloaded_Video')
-                video_thumbnail = info_dict.get('thumbnail', '')
-                duration = info_dict.get('duration', 0)
-                formats = info_dict.get('formats', [])
-                
-                mins, secs = divmod(duration, 60)
-                duration_str = f"{mins} মিনিট {secs} সেকেন্ড" if mins > 0 else f"{secs} সেকেন্ড"
-
-            # ৬. ইউজার ইন্টারফেসে ভিডিওর তথ্য প্রদর্শন (SaveFrom এর মতো কার্ড)
-            st.markdown("<div class='video-card'>", unsafe_allow_html=True)
-            col1, col2 = st.columns([1, 1.5])
-            
-            with col1:
-                if video_thumbnail:
-                    st.image(video_thumbnail, use_container_width=True)
-            
-            with col2:
-                st.markdown(f"#### 🎬 {video_title[:60]}...")
-                st.write(f"⏱️ **ডিউরেশন:** {duration_str}")
-            st.markdown("</div>", unsafe_allow_html=True)
-            
-            # ৭. ফিল্টারিং করে কোয়ালিটি লিংক বের করা
-            download_options = {}
-            for f in formats:
-                if f.get('vcodec') != 'none' and f.get('acodec') != 'none' and f.get('url'):
-                    ext = f.get('ext', 'mp4')
-                    resolution = f.get('format_note', f.get('resolution', 'Unknown'))
-                    label = f"ভিডিও - {resolution} ({ext.upper()})"
-                    download_options[label] = f['url']
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info_dict = ydl.extract_info(url_input, download=False)
                     
-            for f in formats:
-                if f.get('vcodec') == 'none' and f.get('acodec') != 'none' and f.get('url'):
-                    label = f"🎵 শুধুমাত্র অডিও/গান (MP3)"
-                    download_options[label] = f['url']
-            
-            if not download_options and info_dict.get('url'):
-                download_options["🎬 সাধারণ কোয়ালিটি (Direct Link)"] = info_dict['url']
+                    video_title = info_dict.get('title', 'Downloaded_Video')
+                    video_thumbnail = info_dict.get('thumbnail', '')
+                    duration = info_dict.get('duration', 0)
+                    formats = info_dict.get('formats', [])
+                    
+                    mins, secs = divmod(duration, 60)
+                    duration_str = f"{mins}:{secs:02d}"
 
-            # ৮. নতুন প্রফেশনাল ডিরেক্ট ডাউনলোড বাটন (কোনো নতুন পেজ ওপেন হবে না)
-            if download_options:
-                selected_format = st.selectbox("ডাউনলোডের ফরম্যাট বেছে নিন:", list(download_options.keys()))
-                final_download_url = download_options[selected_format]
+                # ৬. ভিডিওর তথ্য প্রদর্শন
+                st.markdown("<div class='savefrom-card'>", unsafe_allow_html=True)
+                c1, c2 = st.columns([1, 1.4])
                 
-                # ফাইল ডিরেক্ট ডাউনলোড করার জন্য ব্যাকএন্ড রিকোয়েস্ট ট্রিক
-                @st.cache_data(show_spinner=False)
-                def get_video_bytes(url):
-                    # ভিডিওর ডাটা ব্যাকএন্ডে সাময়িক ডাউনলোড করে ব্রাউজারে পুশ করবে
-                    return requests.get(url).content
-
-                try:
-                    with st.spinner("📥 ফাইলটি ডাউনলোডের জন্য রেডি হচ্ছে..."):
-                        video_bytes = get_video_bytes(final_download_url)
+                with c1:
+                    if video_thumbnail:
+                        st.image(video_thumbnail, use_container_width=True)
+                
+                with c2:
+                    st.markdown(f"<h4 style='color:#222222; margin-top:0;'>{video_title[:60]}...</h4>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color:#555555;'>⏱️ <b>ডিউরেশন:</b> {duration_str}</p>", unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
+                
+                # ৭. কোয়ালিটি ফরম্যাট তৈরি
+                download_options = {}
+                for f in formats:
+                    if f.get('vcodec') != 'none' and f.get('acodec') != 'none' and f.get('url'):
+                        ext = f.get('ext', 'mp4')
+                        resolution = f.get('format_note', f.get('resolution', 'Unknown'))
+                        label = f"MP4 {resolution}"
+                        download_options[label] = f['url']
                         
-                        # স্ট্রিমলিটের অফিসিয়াল ডিরেক্ট ডাউনলোড বাটন
-                        st.download_button(
-                            label="🚀 সরাসরি ডাউনলোড করুন",
-                            data=video_bytes,
-                            file_name=f"{video_title}.mp4",
-                            mime="video/mp4",
-                            use_container_width=True
-                        )
-                except Exception:
-                    # যদি ফাইলটি অনেক বড় হয়, তবে ব্যাকআপ হিসেবে ডিরেক্ট ফোর্স-ডাউনলোড লিংক শো করবে
-                    st.markdown(f'''
-                        <a href="{final_download_url}" download="{video_title}.mp4" target="_self" style="text-decoration:none;">
-                            <button style="
-                                background-color: #25d366; color: white; width: 100%; font-size: 20px; 
-                                font-weight: bold; border-radius: 8px; padding: 12px; border: none; cursor: pointer;
-                                margin-top: 15px; box-shadow: 0 4px 15px rgba(37,211,102,0.3);
-                            ">🚀 ডিরেক্ট ডাউনলোড করুন (Alt)</button>
-                        </a>
-                    ''', unsafe_allow_html=True)
-            else:
-                st.warning("⚠️ কোনো ডাউনলোড লিংক পাওয়া যায়নি।")
+                for f in formats:
+                    if f.get('vcodec') == 'none' and f.get('acodec') != 'none' and f.get('url'):
+                        label = f"Audio MP3"
+                        download_options[label] = f['url']
                 
-    except Exception as e:
-        st.error("❌ দুঃখিত! ভিডিওর সোর্স ফাইল বের করা যায়নি। অন্য লিংক ট্রাই করুন।")
+                if not download_options and info_dict.get('url'):
+                    download_options["MP4 (সাধারণ কোয়ালিটি)"] = info_dict['url']
 
-           
-           
+                # ৮. কোয়ালিটি ড্রপডাউন এবং ফাইনাল ডাউনলোড বাটন
+                if download_options:
+                    st.write("")
+                    col_select, col_dl_btn = st.columns([1, 1.3])
+                    
+                    with col_select:
+                        selected_format = st.selectbox("", list(download_options.keys()), label_visibility="collapsed", key="format_select")
+                        final_download_url = download_options[selected_format]
+                    
+                    # ফোর্স ডাউনলোড ফাংশন
+                    @st.cache_data(show_spinner=False)
+                    def get_video_bytes(url):
+                        return requests.get(url).content
+
+                    with col_dl_btn:
+                        try:
+                            with st.spinner("⏳"):
+                                video_bytes = get_video_bytes(final_download_url)
+                                st.download_button(
+                                    label="📥 Download Now",
+                                    data=video_bytes,
+                                    file_name=f"{video_title}.mp4",
+                                    mime="video/mp4",
+                                    use_container_width=True,
+                                    key="actual_download_btn"
+                                )
+                        except Exception:
+                            # বড় ফাইলের জন্য ব্যাকআপ রেগুলার বাটন
+                            st.markdown(f'''
+                                <a href="{final_download_url}" download="{video_title}.mp4" target="_self" style="text-decoration:none;">
+                                    <button style="
+                                        background-color: #5fa30f; color: white; width: 100%; font-size: 16px; 
+                                        font-weight: bold; border-radius: 4px; padding: 12px; border: none; cursor: pointer;
+                                    ">📥 Download Now</button>
+                                </a>
+                            ''', unsafe_allow_html=True)
+                else:
+                    st.warning("⚠️ দুঃখিত, কোনো ডাউনলোড লিংক পাওয়া যায়নি।")
+                    
+        except Exception as e:
+            st.error("❌ দুঃখিত! ভিডিওর লিংকটি প্রсеস করা সম্ভব হয়নি। দয়া করে সঠিক লিংক দিন।")
+
+# ৯. ফুটার
+st.markdown("<div class='footer'>© 2026 DownPro Online Service - Premium SafeFrom Layout</div>", unsafe_allow_html=True)
