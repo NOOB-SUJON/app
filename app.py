@@ -4,107 +4,146 @@ import requests
 
 # ১. পেজ কনফিগারেশন
 st.set_page_config(
-    page_title="DownPro.net - Premium Video Downloader",
+    page_title="DownPro.net - Free Online Video Downloader",
     page_icon="📥",
     layout="centered"
 )
 
-# ২. অ্যাডভান্সড সিএসএস ডিজাইন (লোগো এবং গাইডের সম্পূর্ণ কাস্টমাইজেশন)
+# ২. অ্যাডভান্সড সিএসএস ডিজাইন (হুবহু ছবির মতো বাটন, রেটিং এবং অল রিসোর্স সেকশন)
 st.markdown("""
     <style>
-    /* পুরো ওয়েবসাইটের ব্যাকগ্রাউন্ড হালকা এবং ক্লিন রাখা */
-    .stApp { background-color: #fcfcfc !important; }
-    h1 { font-family: 'Arial', sans-serif; font-weight: bold; color: #1e1e1e; text-align: center; margin-bottom: 0px; }
+    /* পুরো ওয়েবসাইটের ব্যাকগ্রাউন্ড সাদা এবং টেক্সট ক্লিন রাখা */
+    .stApp { background-color: #ffffff !important; }
+    h1 { font-family: 'Arial', sans-serif; font-weight: bold; color: #333333; text-align: center; margin-bottom: 25px; }
     
-    /* ডাউনলোড ইন্ট্রো সেকশন ডিজাইন */
-    .intro-box {
-        background: linear-gradient(135deg, #10b981, #059669); 
-        color: white;
-        padding: 20px;
-        border-radius: 12px;
-        text-align: center;
-        margin-bottom: 35px;
-        box-shadow: 0 4px 15px rgba(16,185,129,0.2);
-    }
-    .intro-box h2 { color: white !important; margin-top: 0; font-size: 24px; }
-    .intro-box p { color: #ecfdf5; margin-bottom: 0; font-size: 15px; }
-    
-    /* হোয়াইট সার্চ বক্স ডিজাইন */
+    /* ১০০% হোয়াইট সার্চ বক্স ডিজাইন */
     div.stTextInput > div > div > input {
-        border: 2px solid #10b981 !important;
-        border-radius: 6px !important;
+        border: 2px solid #7cd320 !important;
+        border-radius: 4px !important;
         padding: 14px 15px !important;
         font-size: 16px !important;
         background-color: #ffffff !important;
         color: #222222 !important;
+        box-shadow: none !important;
     }
     
-    /* বাটন স্টাইল */
+    /* সার্চ/ডাউনলোড বাটন স্টাইল */
     div.stButton > button {
-        background-color: #10b981 !important;
+        background-color: #7cd320 !important;
         color: white !important;
         border: none !important;
-        border-radius: 6px !important;
-        padding: 12px 20px !important;
+        border-radius: 4px !important;
+        padding: 13px 20px !important;
         font-weight: bold !important;
         font-size: 16px !important;
         width: 100%;
+        transition: 0.2s ease;
     }
+    div.stButton > button:hover { background-color: #69b519 !important; }
     
-    /* রেজাল্ট কার্ড ডিজাইন */
-    .savefrom-card {
-        background-color: #ffffff; padding: 20px; border-radius: 8px;
-        border: 1px solid #e1e8ed; margin-top: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
+    /* টার্মস এবং রিভিউ সেকশন */
+    .policy-text { text-align: center; font-size: 12px; color: #666666; margin-top: 8px; }
+    .policy-text a { color: #0066cc; text-decoration: none; }
+    .meta-info { text-align: center; font-size: 14px; color: #444444; margin-top: 15px; margin-bottom: 30px; }
+    .stars { color: #ffbc00; font-size: 16px; }
     
-    /* সোশ্যাল মিডিয়া লোগো গ্রিড ডিজাইন */
-    .supported-platforms { text-align: center; margin-top: 50px; margin-bottom: 20px; }
-    .platform-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 15px; }
-    .platform-card {
-        background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;
-        padding: 10px 20px; font-weight: bold; color: #16a34a; font-size: 14px;
-        display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    /* সোশ্যাল মিডিয়া বড় বাটন গ্রিড */
+    .social-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+        margin-bottom: 40px;
     }
+    .social-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eaf6dd;
+        color: #333333;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 14px;
+        font-family: Arial;
+    }
+    .social-btn img { width: 20px; margin-right: 8px; }
+
+    /* অল রিসোর্স গ্রিড */
+    .resource-title { text-align: center; font-weight: bold; color: #333333; margin-top: 20px; margin-bottom: 20px; font-size: 18px; }
+    .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 40px;
+    }
+    .resource-item {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: #444444;
+        padding: 6px;
+        font-family: Arial;
+    }
+    .resource-item span { margin-right: 8px; font-size: 16px; }
     
     /* গাইডলাইন সেকশন ডিজাইন */
-    .guide-section { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; margin-top: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .guide-section { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; margin-top: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
     .guide-title { color: #1e1e1e; font-weight: 700; font-size: 22px; text-align: center; margin-bottom: 25px; }
-    .guide-step { margin-bottom: 20px; padding-left: 15px; border-left: 4px solid #10b981; }
+    .guide-step { margin-bottom: 20px; padding-left: 15px; border-left: 4px solid #7cd320; }
     .guide-step h4 { margin: 0 0 5px 0; color: #0f172a; font-size: 16px; }
     .guide-step p { margin: 0; color: #475569; font-size: 14px; }
     
-    .footer { text-align: center; margin-top: 60px; color: #888888; font-size: 13px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+    /* ভিডিও রেজাল্ট কার্ড */
+    .savefrom-card {
+        background-color: #ffffff; 
+        padding: 20px; 
+        border-radius: 8px;
+        border: 1px solid #e1e8ed; 
+        margin-top: 25px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .footer { text-align: center; margin-top: 60px; color: #888888; font-size: 13px; border-top: 1px solid #eeeeee; padding-top: 20px; }
     </style>
 """, unsafe_allow_html=True)
 
-# ৩. লোগো সেকশন
-st.markdown("<h1 style='font-size: 45px; text-align:center;'><span style='color:#1e1e1e;'>downpro</span><span style='color:#10b981;'>.net</span></h1>", unsafe_allow_html=True)
-st.write("---")
+# ৩. লোগো ও হেডার
+st.markdown("<h1 style='font-size: 36px; text-align:center; color:#333333;'>Free Online Video Downloader</h1>", unsafe_allow_html=True)
 
-# ৪. ডাউনপ্রো ইন্ট্রো সেকশন
+# ৪. ইনপুট ও সার্চ মেকানিজম
+col_input, col_search_btn = st.columns([3.5, 1])
+
+with col_input:
+    url_input = st.text_input("", placeholder="Paste your video link here", label_visibility="collapsed")
+
+with col_search_btn:
+    search_triggered = st.button("Download")
+
+# পলিসি, সিকিউরিটি ও রিভিউ টেক্সট (হুবহু ছবির মতো)
 st.markdown("""
-    <div class='intro-box'>
-        <h2>🚀 DownPro সুপারফাস্ট অনলাইন ভিডিও ডাউনলোডার</h2>
-        <p>কোনো রকম সফটওয়্যার ছাড়াই ইউটিউব, ফেসবুক, ইনস্টাগ্রাম এবং টিকটকের যেকোনো ভিডিও ফুল এইচডি (Full HD) কোয়ালিটিতে সরাসরি আপনার ডিভাইসে সেভ করুন সম্পূর্ণ ফ্রিতে।</p>
+    <p class='policy-text'>By using our service you accept our <a href='#'>Terms of Service</a> and <a href='#'>Privacy Policy</a></p>
+    <p style='text-align:center; font-size:14px; margin-top:10px;'><a href='#' style='color:#0066cc; text-decoration:none;'>▶ How to download? Watch the tutorial</a></p>
+    <p style='text-align:center; font-size:14px; color:#333333; margin-top:15px;'>Scanned by <span style='color:#7cd320; font-weight:bold;'>✓</span> <b>Norton</b> Safe Web</p>
+    <p class='meta-info'><span class='stars'>★★★★★</span> <b>4.8</b> /5 — 54,989 reviews</p>
+""", unsafe_allow_html=True)
+
+# ৫. সোশ্যাল মিডিয়া বড় বাটন সেকশন
+st.markdown("""
+    <div class='social-grid'>
+        <div class='social-btn'><span style='color:#1877f2; font-size:18px; margin-right:8px;'>📘</span> facebook.com</div>
+        <div class='social-btn'><span style='color:#e1306c; font-size:18px; margin-right:8px;'>📸</span> instagram.com</div>
+        <div class='social-btn'><span style='color:#ff0000; font-size:18px; margin-right:8px;'>🔴</span> youtube.com</div>
+        <div class='social-btn'><span style='color:#000000; font-size:18px; margin-right:8px;'>🎵</span> tiktok.com</div>
     </div>
 """, unsafe_allow_html=True)
 
-# ৫. ইনপুট ও সার্চ মেকানিজম
-col_input, col_search_btn = st.columns([3, 1])
-
-with col_input:
-    url_input = st.text_input("", placeholder="এখানে ভিডিওর লিংকটি পেস্ট করুন...", label_visibility="collapsed")
-
-with col_search_btn:
-    search_triggered = st.button("ভিডিও খুঁজুন 🔍")
-
-# মেইন ডাউনলোড লজিক
+# মেইন ডাউনলোড লজিক পার্ট
 if url_input or search_triggered:
     if not url_input:
-        st.warning("⚠️ দয়া করে আগে একটি ভিডিও লিংক পেস্ট করুন।")
+        st.warning("⚠️ Please paste a video link first.")
     else:
         try:
-            with st.spinner("🔍 ভিডিওর সোর্স ফাইল খোঁজা হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।"):
+            with st.spinner("🔍 Locating video source file... Please wait."):
                 ydl_opts = {'extract_flat': False, 'skip_download': True}
                 
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -118,7 +157,7 @@ if url_input or search_triggered:
                     mins, secs = divmod(duration, 60)
                     duration_str = f"{mins}:{secs:02d}"
 
-                # ভিডিওর তথ্য প্রদর্শন
+                # ভিডিওর তথ্য প্রদর্শন কার্ড
                 st.markdown("<div class='savefrom-card'>", unsafe_allow_html=True)
                 c1, c2 = st.columns([1, 1.4])
                 
@@ -128,10 +167,10 @@ if url_input or search_triggered:
                 
                 with c2:
                     st.markdown(f"<h4 style='color:#222222; margin-top:0;'>{video_title[:60]}...</h4>", unsafe_allow_html=True)
-                    st.markdown(f"<p style='color:#555555;'>⏱️ <b>ডিউরেশন:</b> {duration_str}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color:#555555;'>⏱️ <b>Duration:</b> {duration_str}</p>", unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
                 
-                # কোয়ালিটি ফরম্যাট ফিল্টারিং
+                # কোয়ালিটি লিংক ফিল্টারিং
                 download_options = {}
                 for f in formats:
                     if f.get('vcodec') != 'none' and f.get('acodec') != 'none' and f.get('url'):
@@ -146,9 +185,9 @@ if url_input or search_triggered:
                         download_options[label] = f['url']
                 
                 if not download_options and info_dict.get('url'):
-                    download_options["MP4 (সাধারণ কোয়ালিটি)"] = info_dict['url']
+                    download_options["MP4 (Normal Quality)"] = info_dict['url']
 
-                # কোয়ালিটি ড্রপডাউন এবং ফাইনাল ডাউনলোড বাটন
+                # কোয়ালিটি সিলেক্টর এবং ডাউনলোড বাটন
                 if download_options:
                     st.write("")
                     col_select, col_dl_btn = st.columns([1, 1.3])
@@ -177,40 +216,7 @@ if url_input or search_triggered:
                             st.markdown(f'''
                                 <a href="{final_download_url}" download="{video_title}.mp4" target="_self" style="text-decoration:none;">
                                     <button style="
-                                        background-color: #10b981; color: white; width: 100%; font-size: 16px; 
-                                        font-weight: bold; border-radius: 6px; padding: 12px; border: none; cursor: pointer;
+                                        background-color: #7cd320; color: white; width: 100%; font-size: 16px; 
+                                        font-weight: bold; border-radius: 4px; padding: 12px; border: none; cursor: pointer;
                                     ">📥 Download Now</button>
                                 </a>
-                            ''', unsafe_allow_html=True)
-                else:
-                    st.warning("⚠️ দুঃখিত, কোনো ডাউনলোড লিংক পাওয়া যায়নি।")
-                    
-        except Exception as e:
-            st.error("❌ দুঃখিত! ভিডিওর লিংকটি প্রсеস করা সম্ভব হয়নি। দয়া করে সঠিক লিংক দিন।")
-
-# ৬. সাপোর্টেড প্ল্যাটফর্ম সেকশন (আপনার স্ক্রিনশট ১-এর মতো লোগো গ্রিড)
-st.markdown("""
-    <div class='supported-platforms'>
-        <h3 style='color:#334155; font-size:18px;'>🎯 সমর্থিত জনপ্রিয় প্ল্যাটফর্মসমূহ:</h3>
-        <div class='platform-grid'>
-            <div class='platform-card'>🔵 facebook.com</div>
-            <div class='platform-card'>📸 instagram.com</div>
-            <div class='platform-card'>🔴 youtube.com</div>
-            <div class='platform-card'>🎵 tiktok.com</div>
-            <div class='platform-card'>🐦 twitter.com</div>
-            <div class='platform-card'>🎬 vimeo.com</div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-# ৭. সম্পূর্ণ গাইডলাইন সেকশন (Your Screenshot 2 - Step by Step Guide)
-st.markdown("""
-    <div class='guide-section'>
-        <div class='guide-title'>📖 কীভাবে হাই-কোয়ালিটি ভিডিও ডাউনলোড করবেন?</div>
-        
-        <div class='guide-step'>
-            <h4>১. ভিডিওর লিংকটি কপি করুন (Copy the URL)</h4>
-            <p>আপনার পছন্দের প্ল্যাটফর্ম (যেমন: Facebook বা YouTube) থেকে যে ভিডিওটি ডাউনলোড করতে চান, সেটির শেয়ার বাটনে ক্লিক করে লিংকটি কপি করে নিন।</p>
-        </div>
-        
-        <div class='guide-step'>
