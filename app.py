@@ -9,14 +9,12 @@ st.set_page_config(
     layout="centered"
 )
 
-# ২. অ্যাডভান্সড সিএসএস ডিজাইন (হুবহু ছবির মতো বাটন, রেটিং এবং অল রিসোর্স সেকশন)
+# ২. কাস্টম CSS ডিজাইন
 st.markdown("""
     <style>
-    /* পুরো ওয়েবসাইটের ব্যাকগ্রাউন্ড সাদা এবং টেক্সট ক্লিন রাখা */
     .stApp { background-color: #ffffff !important; }
     h1 { font-family: 'Arial', sans-serif; font-weight: bold; color: #333333; text-align: center; margin-bottom: 25px; }
     
-    /* ১০০% হোয়াইট সার্চ বক্স ডিজাইন */
     div.stTextInput > div > div > input {
         border: 2px solid #7cd320 !important;
         border-radius: 4px !important;
@@ -27,7 +25,6 @@ st.markdown("""
         box-shadow: none !important;
     }
     
-    /* সার্চ/ডাউনলোড বাটন স্টাইল */
     div.stButton > button {
         background-color: #7cd320 !important;
         color: white !important;
@@ -41,13 +38,11 @@ st.markdown("""
     }
     div.stButton > button:hover { background-color: #69b519 !important; }
     
-    /* টার্মস এবং রিভিউ সেকশন */
     .policy-text { text-align: center; font-size: 12px; color: #666666; margin-top: 8px; }
     .policy-text a { color: #0066cc; text-decoration: none; }
     .meta-info { text-align: center; font-size: 14px; color: #444444; margin-top: 15px; margin-bottom: 30px; }
     .stars { color: #ffbc00; font-size: 16px; }
     
-    /* সোশ্যাল মিডিয়া বড় বাটন গ্রিড */
     .social-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -67,9 +62,7 @@ st.markdown("""
         font-size: 14px;
         font-family: Arial;
     }
-    .social-btn img { width: 20px; margin-right: 8px; }
-
-    /* অল রিসোর্স গ্রিড */
+    
     .resource-title { text-align: center; font-weight: bold; color: #333333; margin-top: 20px; margin-bottom: 20px; font-size: 18px; }
     .resource-grid {
         display: grid;
@@ -87,14 +80,12 @@ st.markdown("""
     }
     .resource-item span { margin-right: 8px; font-size: 16px; }
     
-    /* গাইডলাইন সেকশন ডিজাইন */
-    .guide-section { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; margin-top: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+    .guide-section { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; margin-top: 40px; }
     .guide-title { color: #1e1e1e; font-weight: 700; font-size: 22px; text-align: center; margin-bottom: 25px; }
     .guide-step { margin-bottom: 20px; padding-left: 15px; border-left: 4px solid #7cd320; }
     .guide-step h4 { margin: 0 0 5px 0; color: #0f172a; font-size: 16px; }
     .guide-step p { margin: 0; color: #475569; font-size: 14px; }
     
-    /* ভিডিও রেজাল্ট কার্ড */
     .savefrom-card {
         background-color: #ffffff; 
         padding: 20px; 
@@ -119,7 +110,7 @@ with col_input:
 with col_search_btn:
     search_triggered = st.button("Download")
 
-# পলিসি, সিকিউরিটি ও রিভিউ টেক্সট (হুবহু ছবির মতো)
+# পলিসি ও রিভিউ টেক্সট
 st.markdown("""
     <p class='policy-text'>By using our service you accept our <a href='#'>Terms of Service</a> and <a href='#'>Privacy Policy</a></p>
     <p style='text-align:center; font-size:14px; margin-top:10px;'><a href='#' style='color:#0066cc; text-decoration:none;'>▶ How to download? Watch the tutorial</a></p>
@@ -127,7 +118,7 @@ st.markdown("""
     <p class='meta-info'><span class='stars'>★★★★★</span> <b>4.8</b> /5 — 54,989 reviews</p>
 """, unsafe_allow_html=True)
 
-# ৫. সোশ্যাল মিডিয়া বড় বাটন সেকশন
+# ৫. সোশ্যাল মিডিয়া বাটন সেকশন
 st.markdown("""
     <div class='social-grid'>
         <div class='social-btn'><span style='color:#1877f2; font-size:18px; margin-right:8px;'>📘</span> facebook.com</div>
@@ -137,7 +128,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# মেইন ডাউনলোড লজিক পার্ট
+# মেইন ডাউনলোড লজিক
 if url_input or search_triggered:
     if not url_input:
         st.warning("⚠️ Please paste a video link first.")
@@ -213,10 +204,18 @@ if url_input or search_triggered:
                                     key="actual_download_btn"
                                 )
                         except Exception:
-                            st.markdown(f'''
-                                <a href="{final_download_url}" download="{video_title}.mp4" target="_self" style="text-decoration:none;">
-                                    <button style="
-                                        background-color: #7cd320; color: white; width: 100%; font-size: 16px; 
-                                        font-weight: bold; border-radius: 4px; padding: 12px; border: none; cursor: pointer;
-                                    ">📥 Download Now</button>
-                                </a>
+                            html_btn = f'<a href="{final_download_url}" download="{video_title}.mp4" target="_self" style="text-decoration:none;"><button style="background-color: #7cd320; color: white; width: 100%; font-size: 16px; font-weight: bold; border-radius: 4px; padding: 12px; border: none; cursor: pointer;">📥 Download Now</button></a>'
+                            st.markdown(html_btn, unsafe_allow_html=True)
+                else:
+                    st.warning("⚠️ No download links found for this video.")
+                    
+        except Exception as e:
+            st.error("❌ Error processing link. Please make sure the URL is correct.")
+
+# 🖥️ অল রিসোর্স লিস্ট সেকশন
+st.markdown("<div class='resource-title'>All resources</div>", unsafe_allow_html=True)
+st.markdown("""
+    <div class='resource-grid'>
+        <div class='resource-item'><span>🎥</span> dailymotion.com</div>
+        <div class='resource-item'><span>🌐</span> vimeo.com</div>
+        <div class='resource-item'><span>🔹</span> vk.com</div>
